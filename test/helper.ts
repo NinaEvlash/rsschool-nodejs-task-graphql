@@ -24,3 +24,4 @@ async function build(t: Test) {
 }
 
 export { config, build };
+console.log('Hello world!');
