@@ -16,7 +16,6 @@ export const UserType = new GraphQLObjectType<UserSource, GQLContext>({
     id: { type: new GraphQLNonNull(UUIDType) },
     email: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: GraphQLString },
-
     posts: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(PostType))),
       resolve: (parent, _args, ctx) => {
