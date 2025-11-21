@@ -1,0 +1,43 @@
+import {
+  GraphQLObjectType,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLFieldConfigMap,
+} from 'graphql';
+import { UUIDType } from './uuid.js';
+import { GQLContext } from './types.js';
+import { UserType } from './user.js';
+import { PostType } from './post.js';
+
+export const QueryType = new GraphQLObjectType({
+  name: 'Query',
+  fields: (): GraphQLFieldConfigMap<unknown, GQLContext> => ({
+    users: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType))),
+      resolve: (_root, _args, ctx) => ctx.prisma.user.findMany(),
+    },
+
+    user: {
+      type: UserType,
+      args: {
+        id: { type: new GraphQLNonNull(UUIDType) },
+      },
+      resolve: (_root, args: { id: string }, ctx) =>
+        ctx.prisma.user.findUnique({ where: { id: args.id } }),
+    },
+
+    posts: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(PostType))),
+      resolve: (_root, _args, ctx) => ctx.prisma.post.findMany(),
+    },
+
+    post: {
+      type: PostType,
+      args: {
+        id: { type: new GraphQLNonNull(UUIDType) },
+      },
+      resolve: (_root, args: { id: string }, ctx) =>
+        ctx.prisma.post.findUnique({ where: { id: args.id } }),
+    },
+  }),
+});
