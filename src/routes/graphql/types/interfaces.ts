@@ -1,6 +1,5 @@
 export interface CreateUserArgs {
-  email: string;
-  name: string;
+  name?: string | null;
   balance: number;
 }
 

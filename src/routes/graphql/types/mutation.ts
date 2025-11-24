@@ -27,7 +27,7 @@ export const MutationType = new GraphQLObjectType({
       resolve: (_root, args: CreateUserArgs, ctx) =>
         ctx.prisma.user.create({
           data: {
-            ...args,
+            name: args.name ?? '',
             balance: 0,
           },
         }),
@@ -43,7 +43,9 @@ export const MutationType = new GraphQLObjectType({
       resolve: (_root, { id, ...data }: UpdateUserArgs, ctx) =>
         ctx.prisma.user.update({
           where: { id },
-          data,
+          data: {
+            name: data.name ?? undefined,
+          },
         }),
     },
 
@@ -64,7 +66,13 @@ export const MutationType = new GraphQLObjectType({
         authorId: { type: new GraphQLNonNull(UUIDType) },
       },
       resolve: (_root, args: CreatePostArgs, ctx) =>
-        ctx.prisma.post.create({ data: args }),
+        ctx.prisma.post.create({
+          data: {
+            title: args.title,
+            content: args.content ?? '',
+            authorId: args.authorId,
+          },
+        }),
     },
 
     updatePost: {
@@ -77,7 +85,10 @@ export const MutationType = new GraphQLObjectType({
       resolve: (_root, { id, ...data }: UpdatePostArgs, ctx) =>
         ctx.prisma.post.update({
           where: { id },
-          data,
+          data: {
+            title: data.title ?? undefined,
+            content: data.content ?? undefined,
+          },
         }),
     },
 
