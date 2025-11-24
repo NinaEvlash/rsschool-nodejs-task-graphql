@@ -1,22 +1,31 @@
-export interface CreateUserArgs {
-  name?: string | null;
+export interface CreateUserDto {
+  name: string;
   balance: number;
 }
-
-export interface UpdateUserArgs {
-  id: string;
-  email: string;
-  name: string;
-}
-
-export interface CreatePostArgs {
+export interface CreatePostDto {
   title: string;
   content: string;
   authorId: string;
 }
+export interface CreateProfileDto {
+  userId: string;
+  memberTypeId: string;
+  isMale: boolean;
+  yearOfBirth: number;
+}
 
-export interface UpdatePostArgs {
-  id: string;
-  title: string;
-  content: string;
+export interface ChangeUserDto {
+  name?: string;
+  balance?: number;
+}
+
+export interface ChangePostDto {
+  title?: string;
+  content?: string;
+}
+
+export interface ChangeProfileDto {
+  memberTypeId?: string;
+  isMale?: boolean;
+  yearOfBirth?: number;
 }
