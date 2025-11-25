@@ -11,13 +11,14 @@ import { PostType } from './post.js';
 import { ProfileType } from './profile.js';
 import { MemberTypeType } from './memberType.js';
 import { MemberTypeIdType } from './memberTypeId.js';
+import { usersResolver } from './usersResolver.js';
 
 export const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: (): GraphQLFieldConfigMap<unknown, GQLContext> => ({
     users: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType))),
-      resolve: (_root, _args, ctx) => ctx.prisma.user.findMany(),
+      resolve: usersResolver,
     },
     user: {
       type: UserType,
