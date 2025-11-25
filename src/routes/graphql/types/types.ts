@@ -1,6 +1,4 @@
-import type DataLoader from 'dataloader';
-import type { GraphQLResolveInfo } from 'graphql';
-import type { ResolveTree, FieldsByTypeName } from 'graphql-parse-resolve-info';
+import type { Loaders } from '../loaders/loaders.js';
 import type {
   PrismaClient,
   User as PrismaUser,
@@ -11,14 +9,7 @@ import type {
 
 export interface GQLContext {
   prisma: PrismaClient;
-
-  loaders: {
-    memberTypeById: DataLoader<string, PrismaMemberType | null>;
-    profileByUserId: DataLoader<string, PrismaProfile | null>;
-    postsByAuthorId: DataLoader<string, PrismaPost[]>;
-  };
-
-  getResolveInfo: (info: GraphQLResolveInfo) => ResolveTree | FieldsByTypeName | null;
+  loaders: Loaders;
 }
 
 export type UserSource = PrismaUser;

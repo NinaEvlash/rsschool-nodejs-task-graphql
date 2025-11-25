@@ -10,6 +10,7 @@ import {
 import { GQLContext } from './types.js';
 import { PostType } from './post.js';
 import { ProfileType } from './profile.js';
+//import { MemberTypeType } from './memberType.js';
 
 export const UserType = new GraphQLObjectType<User, GQLContext>({
   name: 'User',
@@ -20,41 +21,38 @@ export const UserType = new GraphQLObjectType<User, GQLContext>({
 
     profile: {
       type: ProfileType,
-      resolve: (parent, _args, ctx) =>
-        ctx.prisma.profile.findUnique({
-          where: { userId: parent.id },
-        }),
+      resolve: (parent, _args, ctx) => {
+        return ctx.loaders.profileByUserId.load(parent.id);
+      },
     },
 
     posts: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(PostType))),
-      resolve: (parent, _args, ctx) =>
-        ctx.prisma.post.findMany({
-          where: { authorId: parent.id },
-        }),
+      resolve: (parent, _args, ctx) => {
+        return ctx.loaders.postsByAuthorId.load(parent.id);
+      },
     },
+
+    /*memberType: {
+      type: MemberTypeType,
+      resolve: async (parent, _args, ctx) => {
+        const profile = await ctx.loaders.profileByUserId.load(parent.id);
+        if (!profile) return null;
+        return ctx.loaders.memberTypeById.load(profile.memberTypeId);
+      },
+    },*/
 
     userSubscribedTo: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType))),
-      resolve: async (parent, _args, ctx: GQLContext) => {
-        const subscriptions = await ctx.prisma.subscribersOnAuthors.findMany({
-          where: { subscriberId: parent.id },
-          include: { author: true },
-        });
-
-        return subscriptions.map((sub) => sub.author);
+      resolve: (parent, _args, ctx) => {
+        return ctx.loaders.userSubscribedTo.load(parent.id);
       },
     },
 
     subscribedToUser: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType))),
-      resolve: async (parent, _args, ctx: GQLContext) => {
-        const subscriptions = await ctx.prisma.subscribersOnAuthors.findMany({
-          where: { authorId: parent.id },
-          include: { subscriber: true },
-        });
-
-        return subscriptions.map((sub) => sub.subscriber);
+      resolve: (parent, _args, ctx) => {
+        return ctx.loaders.subscribedToUser.load(parent.id);
       },
     },
   }),
